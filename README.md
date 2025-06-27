@@ -8,7 +8,7 @@ This project is set up to begin development on the RedLens data ingestion pipeli
 1. **Clone the Repository**
 
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/MuditaSai/redlens.git
    ```
 
 2. **Install Dependencies**
