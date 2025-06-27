@@ -78,6 +78,34 @@ class TestRedditClient(unittest.TestCase):
             self.assertTrue(hasattr(comment, 'body'))
             self.assertTrue(hasattr(comment, 'score'))
     
+    def test_get_popular_subreddits(self):
+        """Test retrieving popular subreddits."""
+        popular = self.client.get_popular_subreddits(limit=10)
+        
+        # Verify we got subreddits back
+        self.assertIsInstance(popular, list)
+        self.assertGreater(len(popular), 0)
+        self.assertLessEqual(len(popular), 10)
+        
+        # Verify each item is a string (subreddit name)
+        for subreddit_name in popular:
+            self.assertIsInstance(subreddit_name, str)
+            self.assertGreater(len(subreddit_name), 0)
+    
+    def test_get_trending_subreddits(self):
+        """Test retrieving trending subreddits."""
+        trending = self.client.get_trending_subreddits(limit=5)
+        
+        # Verify we got subreddits back
+        self.assertIsInstance(trending, list)
+        self.assertGreater(len(trending), 0)
+        self.assertLessEqual(len(trending), 5)
+        
+        # Verify each item is a string (subreddit name)
+        for subreddit_name in trending:
+            self.assertIsInstance(subreddit_name, str)
+            self.assertGreater(len(subreddit_name), 0)
+    
     def test_invalid_subreddit(self):
         """Test behavior with an invalid subreddit name."""
         with self.assertRaises(Exception):

@@ -50,6 +50,12 @@ FETCHING_CONFIG = {
     # Whether to use the development subreddit list (5) or full list (50)
     "use_development_list": True,
     
+    # Whether to use dynamic discovery for production (True) or static list (False)
+    "use_dynamic_discovery": True,
+    
+    # Number of subreddits to fetch when using dynamic discovery
+    "dynamic_subreddit_count": 50,
+    
     # Delay between subreddit requests (in seconds) to respect rate limits
     "request_delay": 1.0,
     

@@ -40,9 +40,41 @@ class DataFetcher:
         """
         self.reddit_client = reddit_client or RedditClient()
         self.config = get_fetching_config()
-        self.target_subreddits = get_target_subreddits()
+        self.target_subreddits = self._get_target_subreddits()
         
         logger.info(f"DataFetcher initialized with {len(self.target_subreddits)} target subreddits")
+    
+    def _get_target_subreddits(self) -> List[str]:
+        """
+        Get the list of target subreddits based on configuration.
+        
+        Returns:
+            List[str]: List of subreddit names to fetch data from
+        """
+        config = self.config
+        
+        # If in development mode, use the static development list
+        if config["use_development_list"]:
+            logger.info("Using development subreddit list (static)")
+            return get_target_subreddits()
+        
+        # If dynamic discovery is enabled for production, fetch popular subreddits
+        if config["use_dynamic_discovery"]:
+            logger.info("Using dynamic subreddit discovery for production")
+            try:
+                popular_subreddits = self.reddit_client.get_popular_subreddits(
+                    limit=config["dynamic_subreddit_count"]
+                )
+                logger.info(f"Successfully discovered {len(popular_subreddits)} popular subreddits")
+                return popular_subreddits
+            except Exception as e:
+                logger.error(f"Failed to fetch popular subreddits dynamically: {str(e)}")
+                logger.info("Falling back to static subreddit list")
+                return get_target_subreddits()
+        else:
+            # Use static production list
+            logger.info("Using static production subreddit list")
+            return get_target_subreddits()
     
     def fetch_all_data(self) -> Dict[str, Any]:
         """

@@ -55,6 +55,12 @@ This project is set up to begin development on the RedLens data ingestion pipeli
    
    # Run with verbose logging
    python3 scripts/run_data_collection.py --verbose
+   
+   # Test dynamic subreddit discovery
+   python3 scripts/test_dynamic_discovery.py
+   
+   # Test production mode with dynamic discovery
+   python3 scripts/test_production_mode.py
    ```
 
 ## Project Structure
@@ -72,6 +78,8 @@ This project is set up to begin development on the RedLens data ingestion pipeli
   - `demo_reddit_client.py` - Demo showing client usage
   - `test_data_fetcher.py` - Data fetcher functionality test
   - `run_data_collection.py` - Main data collection script
+  - `test_dynamic_discovery.py` - Test dynamic subreddit discovery
+  - `test_production_mode.py` - Test production mode with dynamic discovery
 
 ## Features Implemented
 
@@ -91,7 +99,10 @@ This project is set up to begin development on the RedLens data ingestion pipeli
 
 ### RL-3: Implement: Data Fetching Loop ✅
 - `DataFetcher` service for orchestrating data collection
+- **Dynamic subreddit discovery** - Fetches actual top 50 popular subreddits from Reddit
 - Configurable list of target subreddits (5 for development, 50 for production)
+- Smart filtering of NSFW and low-quality subreddits
+- Fallback to static lists if dynamic discovery fails
 - Structured data collection from multiple subreddits
 - Progress logging and error handling
 - Rate limiting and retry mechanisms

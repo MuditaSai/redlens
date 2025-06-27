@@ -126,6 +126,98 @@ class RedditClient:
         except Exception as e:
             raise Exception(f"Failed to fetch subreddit info for r/{subreddit_name}: {str(e)}")
     
+    def get_popular_subreddits(self, limit: int = 50) -> List[str]:
+        """
+        Get the most popular subreddits from Reddit.
+        
+        Args:
+            limit (int): Number of popular subreddits to retrieve (default: 50)
+            
+        Returns:
+            List[str]: List of subreddit names sorted by popularity
+            
+        Raises:
+            Exception: If popular subreddits cannot be retrieved
+        """
+        try:
+            popular_subreddits = list(self.reddit.subreddits.popular(limit=limit * 2))  # Get more to filter
+            
+            # Filter out NSFW and problematic subreddits
+            filtered_subreddits = []
+            excluded_keywords = {
+                'nsfw', 'porn', 'sex', 'xxx', 'adult', 'onlyfans', 'gone', 'wild',
+                'circlejerk', 'jerk', 'shitpost', 'copypasta'
+            }
+            
+            for subreddit in popular_subreddits:
+                # Skip NSFW subreddits
+                if subreddit.over18:
+                    continue
+                    
+                # Skip subreddits with problematic keywords
+                subreddit_name_lower = subreddit.display_name.lower()
+                if any(keyword in subreddit_name_lower for keyword in excluded_keywords):
+                    continue
+                    
+                # Skip subreddits with very few subscribers (likely spam/inactive)
+                if subreddit.subscribers and subreddit.subscribers < 10000:
+                    continue
+                    
+                filtered_subreddits.append(subreddit.display_name)
+                
+                if len(filtered_subreddits) >= limit:
+                    break
+            
+            return filtered_subreddits[:limit]
+            
+        except Exception as e:
+            raise Exception(f"Failed to fetch popular subreddits: {str(e)}")
+    
+    def get_trending_subreddits(self, limit: int = 20) -> List[str]:
+        """
+        Get trending/new popular subreddits from Reddit.
+        
+        Args:
+            limit (int): Number of trending subreddits to retrieve (default: 20)
+            
+        Returns:
+            List[str]: List of trending subreddit names
+            
+        Raises:
+            Exception: If trending subreddits cannot be retrieved
+        """
+        try:
+            # Get new popular subreddits (recently gaining popularity)
+            trending_subreddits = list(self.reddit.subreddits.popular(limit=limit * 3))
+            
+            # Filter similar to popular subreddits
+            filtered_trending = []
+            excluded_keywords = {
+                'nsfw', 'porn', 'sex', 'xxx', 'adult', 'onlyfans', 'gone', 'wild',
+                'circlejerk', 'jerk', 'shitpost', 'copypasta'
+            }
+            
+            for subreddit in trending_subreddits:
+                if subreddit.over18:
+                    continue
+                    
+                subreddit_name_lower = subreddit.display_name.lower()
+                if any(keyword in subreddit_name_lower for keyword in excluded_keywords):
+                    continue
+                    
+                if subreddit.subscribers and subreddit.subscribers < 50000:
+                    continue
+                    
+                filtered_trending.append(subreddit.display_name)
+                
+                if len(filtered_trending) >= limit:
+                    break
+            
+            return filtered_trending[:limit]
+            
+        except Exception as e:
+            raise Exception(f"Failed to fetch trending subreddits: {str(e)}")
+    
     def test_connection(self) -> bool:
         """
         Test if the Reddit API connection is working.
