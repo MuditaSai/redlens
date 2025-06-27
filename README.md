@@ -39,16 +39,39 @@ This project is set up to begin development on the RedLens data ingestion pipeli
    python3 -m pytest tests/ -v
    ```
 
+5. **Run Data Collection**
+
+   To run the full data fetching process:
+
+   ```bash
+   # Test the data fetcher
+   python3 scripts/test_data_fetcher.py
+   
+   # Run full data collection with default output
+   python3 scripts/run_data_collection.py
+   
+   # Run with custom output file
+   python3 scripts/run_data_collection.py --output my_data.json
+   
+   # Run with verbose logging
+   python3 scripts/run_data_collection.py --verbose
+   ```
+
 ## Project Structure
 
 - `/app` - Main application code
   - `config.py` - Configuration management and environment variables
   - `reddit_client.py` - Reddit API client service
+  - `settings.py` - Application settings and subreddit lists
+  - `data_fetcher.py` - Data fetching orchestration service
 - `/tests` - Unit and integration tests
   - `test_reddit_client.py` - Unit tests for Reddit client
+  - `test_data_fetcher.py` - Unit tests for data fetcher
 - `/scripts` - Utility scripts
   - `test_reddit_client.py` - Basic functionality test script
   - `demo_reddit_client.py` - Demo showing client usage
+  - `test_data_fetcher.py` - Data fetcher functionality test
+  - `run_data_collection.py` - Main data collection script
 
 ## Features Implemented
 
@@ -65,3 +88,12 @@ This project is set up to begin development on the RedLens data ingestion pipeli
 - Proper error handling and type hints
 - Custom User-Agent implementation
 - Comprehensive test coverage
+
+### RL-3: Implement: Data Fetching Loop ✅
+- `DataFetcher` service for orchestrating data collection
+- Configurable list of target subreddits (5 for development, 50 for production)
+- Structured data collection from multiple subreddits
+- Progress logging and error handling
+- Rate limiting and retry mechanisms
+- Comprehensive output data structure with metadata
+- JSON export functionality
