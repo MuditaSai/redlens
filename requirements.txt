@@ -1,3 +1,4 @@
 fastapi
 praw
 python-dotenv
+pytest
