@@ -1,0 +1,3 @@
+fastapi
+praw
+python-dotenv
